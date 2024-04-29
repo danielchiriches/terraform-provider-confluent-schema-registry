@@ -47,5 +47,6 @@ jobs:
           version: latest
           args: release --clean
         env:
-        #  GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
+          # GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
+          GPG_FINGERPRINT: ${{ secrets.GPG_FINGERPRINT }}
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}

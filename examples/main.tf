@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     schemaregistry = {
-      version = "0.6"
+      version = "0.1.0"
       source  = "github.com/danielchiriches/schemaregistry"
     }
   }

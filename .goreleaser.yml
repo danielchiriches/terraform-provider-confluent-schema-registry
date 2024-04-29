@@ -46,7 +46,9 @@ signs:
       - "--detach-sign"
       - "${artifact}"
 release:
-  # If you want to manually examine the release before its live, uncomment this line:
-  draft: true
+  github:
+    owner: "danielchiriches"
+    name: "terraform-provider-confluent-schema-registry"
+  # draft: true TODO after testing set this back to true
 changelog:
   skip: true

@@ -1,12 +1,24 @@
 # terraform-provider-confluent-schema-registry
 A terraform provider for managing schemas in a Confluent schema registry
 
+## Developing at Fetch
+The local development workflow
+https://github.com/hashicorp/terraform-provider-aws/issues/5396
+
+1. make go code change
+2. make build
+3. cp to new place in plugins dir
+4. $ cp dist/terraform-provider-schemaregistry ~/.terraform.d/plugins/local/fetch-rewards/confluent-schema-registry/1.1.0/darwin_arm64/terraform-provider-confluent-schema-registry_1.1.0
+4. delete providers in .terraform
+5. delete .terraform.lock.hcl
+6. terraform init
+
 ## Provider configuration
 ```
 terraform {
     required_providers {
         schemaregistry = {
-            source = "arkiaconsulting/confluent-schema-registry"
+            source = "danielchiriches/confluent-schema-registry"
         }
     }
 }
@@ -54,14 +66,14 @@ resource "schemaregistry_schema" "with_reference" {
   reference {
     name = "akc.test.event"
     subject = schemaregistry_schema.referenced_event.subject
-    // version will always be upgraded with the referenced event schema version  
+    // version will always be upgraded with the referenced event schema version
     version = schemaregistry_schema.referenced_event.version
   }
 
   reference {
     name = "akc.test.other_event"
     subject = schemaregistry_schema.user_added.subject
-    // version will always be upgraded with the referenced event schema version  
+    // version will always be upgraded with the referenced event schema version
     version = schemaregistry_schema.referenced_event.version
   }
 }

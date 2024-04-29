@@ -88,6 +88,12 @@ func resourceSchema() *schema.Resource {
 				Description: "The schema type",
 				Default:     "avro",
 			},
+			"compatibility_level": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "The compatibiltiy level of the schema",
+				Default:     "FORWARD_TRANSITIVE",
+			},
 		},
 	}
 }
@@ -99,10 +105,16 @@ func schemaCreate(ctx context.Context, d *schema.ResourceData, meta interface{})
 	schemaString := d.Get("schema").(string)
 	references := ToRegistryReferences(d.Get("reference").([]interface{}))
 	schemaType := ToSchemaType(d.Get("schema_type"))
+	compatibilityLevel := ToCompatibilityLevelType(d.Get("compatibility_level"))
 
 	client := meta.(*srclient.SchemaRegistryClient)
 
 	schema, err := client.CreateSchema(subject, schemaString, schemaType, references...)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	_, err = client.ChangeSubjectCompatibilityLevel(subject, compatibilityLevel)
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -126,6 +138,7 @@ func schemaUpdate(ctx context.Context, d *schema.ResourceData, meta interface{})
 	schemaString := d.Get("schema").(string)
 	references := ToRegistryReferences(d.Get("reference").([]interface{}))
 	schemaType := ToSchemaType(d.Get("schema_type"))
+	compatibilityLevel := ToCompatibilityLevelType(d.Get("compatibility_level"))
 
 	client := meta.(*srclient.SchemaRegistryClient)
 
@@ -134,6 +147,11 @@ func schemaUpdate(ctx context.Context, d *schema.ResourceData, meta interface{})
 		if strings.Contains(err.Error(), "409") {
 			return diag.Errorf(`invalid "schema": incompatible`)
 		}
+		return diag.FromErr(err)
+	}
+
+	_, err = client.ChangeSubjectCompatibilityLevel(subject, compatibilityLevel)
+	if err != nil {
 		return diag.FromErr(err)
 	}
 
@@ -221,6 +239,31 @@ func ToSchemaType(schemaType interface{}) srclient.SchemaType {
 	}
 	if schemaType == "protobuf" {
 		returnType = srclient.Protobuf
+	}
+
+	return returnType
+}
+
+func ToCompatibilityLevelType(compatibilityLevel interface{}) srclient.CompatibilityLevel {
+	returnType := srclient.ForwardTransitive
+
+	if compatibilityLevel == "NONE" {
+		returnType = srclient.None
+	}
+	if compatibilityLevel == "BACKWARD" {
+		returnType = srclient.Backward
+	}
+	if compatibilityLevel == "BACKWARD_TRANSITIVE" {
+		returnType = srclient.BackwardTransitive
+	}
+	if compatibilityLevel == "FORWARD" {
+		returnType = srclient.Forward
+	}
+	if compatibilityLevel == "FULL" {
+		returnType = srclient.Full
+	}
+	if compatibilityLevel == "FULL_TRANSITIVE" {
+		returnType = srclient.FullTransitive
 	}
 
 	return returnType

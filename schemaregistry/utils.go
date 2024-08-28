@@ -1,8 +1,6 @@
 package schemaregistry
 
 import (
-	"context"
-
 	"encoding/json"
 	"fmt"
 	"github.com/ashleybill/srclient"

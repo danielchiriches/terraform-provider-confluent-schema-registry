@@ -52,5 +52,3 @@ release:
     owner: "danielchiriches"
     name: "terraform-provider-confluent-schema-registry"
   # draft: true TODO after testing set this back to true
-changelog:
-  skip: true

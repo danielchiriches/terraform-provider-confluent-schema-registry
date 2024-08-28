@@ -22,6 +22,16 @@ func dataSourceSchema() *schema.Resource {
 				Optional:    true,
 				Description: "The version of the schema",
 			},
+			"desired_version": {
+				Type:        schema.TypeInt,
+				Optional:    true,
+				Description: "The custom field version of the schema",
+			},
+			"custom_version_field": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "The subject related to the schema",
+			},
 			"schema_id": {
 				Type:        schema.TypeInt,
 				Computed:    true,

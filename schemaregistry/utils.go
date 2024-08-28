@@ -1,5 +1,13 @@
 package schemaregistry
 
+import (
+	"context"
+
+	"github.com/ashleybill/srclient"
+	"fmt"
+	"encoding/json"
+)
+
 const IDSeparator = "___"
 
 func formatSchemaVersionID(subject string) string {

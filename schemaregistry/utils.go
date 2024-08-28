@@ -17,7 +17,7 @@ func extractSchemaVersionID(id string) string {
 }
 
 // getSchemaByCustomVersionField gets the schema that contains a specific customVersionField and desiredVersion
-func getSchemaByCustomVersionField(client *srclient.SchemaRegistryClient, subject string, customVersionField string, desiredVersion string) (*srclient.Schema, error) {
+func getSchemaByCustomVersionField(client *srclient.SchemaRegistryClient, subject string, customVersionField string, desiredVersion int) (*srclient.Schema, error) {
 	versions, err := client.GetSchemaVersions(subject)
 	if err != nil {
 		return nil, err
@@ -38,11 +38,19 @@ func getSchemaByCustomVersionField(client *srclient.SchemaRegistryClient, subjec
 			return nil, err
 		}
 
-		if schemaData[customVersionField] == desiredVersion {
-			// Check if this is the latest version found so far
-			if latestSchema == nil || version > latestVersion {
-				latestSchema = schema
-				latestVersion = version
+		// Look for the custom version field in the schema data
+		if fields, ok := schemaData["fields"].([]interface{}); ok {
+			for _, field := range fields {
+				if fieldMap, ok := field.(map[string]interface{}); ok {
+					if name, ok := fieldMap["name"].(string); ok && name == customVersionField {
+						if fieldVersion, ok := fieldMap["default"].(float64); ok && int(fieldVersion) == desiredVersion {
+							if latestSchema == nil || version > latestVersion {
+								latestSchema = schema
+								latestVersion = version
+							}
+						}
+					}
+				}
 			}
 		}
 	}

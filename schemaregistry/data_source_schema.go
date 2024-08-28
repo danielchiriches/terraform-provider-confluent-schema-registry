@@ -66,7 +66,7 @@ func dataSourceSubjectRead(ctx context.Context, d *schema.ResourceData, m interf
 	subject := d.Get("subject").(string)
 	version := d.Get("version").(int)
 	customVersionField := d.Get("custom_version_field").(string)
-	desiredVersion := d.Get("desired_version").(string)
+	desiredVersion := d.Get("desired_version").(int)
 
 	client := m.(*srclient.SchemaRegistryClient)
 	var schema *srclient.Schema
@@ -74,7 +74,7 @@ func dataSourceSubjectRead(ctx context.Context, d *schema.ResourceData, m interf
 
 	if version > 0 {
 		schema, err = client.GetSchemaByVersion(subject, version)
-	} else if customVersionField != "" && desiredVersion != "" {
+	} else if customVersionField != "" && desiredVersion > 0 {
 		schema, err = getSchemaByCustomVersionField(client, subject, customVersionField, desiredVersion)
 	} else {
 		schema, err = client.GetLatestSchema(subject)

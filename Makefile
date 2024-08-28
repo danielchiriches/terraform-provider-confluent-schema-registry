@@ -4,7 +4,7 @@ HOSTNAME=github.com
 NAMESPACE=danielchiriches
 NAME=schemaregistry
 BINARY=terraform-provider-${NAME}
-VERSION=0.3.4
+VERSION=0.3.5
 OS_ARCH=linux_amd64
 
 default: install

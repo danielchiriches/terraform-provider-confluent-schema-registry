@@ -3,9 +3,9 @@ package schemaregistry
 import (
 	"context"
 
-	"github.com/ashleybill/srclient"
-	"fmt"
 	"encoding/json"
+	"fmt"
+	"github.com/ashleybill/srclient"
 )
 
 const IDSeparator = "___"
@@ -19,7 +19,7 @@ func extractSchemaVersionID(id string) string {
 }
 
 // getSchemaByCustomVersionField gets the schema that contains a specific customVersionField and desiredVersion
-funct getSchemaByCustomVersionField(client *srclient.SchemaRegistryClient, subject string, customVersionField string, desiredVersion string) (*srclient.Schema, error) {
+func getSchemaByCustomVersionField(client *srclient.SchemaRegistryClient, subject string, customVersionField string, desiredVersion string) (*srclient.Schema, error) {
 	versions, err := client.GetSchemaVersions(subject)
 	if err != nil {
 		return nil, err
@@ -50,7 +50,7 @@ funct getSchemaByCustomVersionField(client *srclient.SchemaRegistryClient, subje
 	}
 
 	if latestSchema == nil {
-		return nil, fmt.Errorf("No schema found with %s=%s", customVersionField, desiredVersion)
+		return nil, fmt.Errorf("No schema found with %s=%s for subject %s", customVersionField, desiredVersion, subject)
 	}
 
 	return latestSchema, nil
